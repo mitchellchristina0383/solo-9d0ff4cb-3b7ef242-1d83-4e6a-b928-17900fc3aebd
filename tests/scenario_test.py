@@ -66,6 +66,15 @@ ev = call("GET", "/events")["events"]
 check("事件流含 2 次扩容", sum(1 for e in ev if e["kind"] == "scale_up") == 2)
 check("调整原因可查", "容量" in target()["reason"], target()["reason"])
 
+# 副本缺口：目标 6、就绪 3 → 缺口 3，进行中
+g = call("GET", "/gap")
+check("缺口查询返回目标/就绪/缺口且正在计时",
+      g["target"] == 6 and g["ready"] == 3 and g["shortage"] == 3
+      and g["gap_active"] is True and g["started_at"] is not None
+      and g["timed_out"] is False, str(g))
+check("缺口片段可在历史中查到",
+      len(call("GET", "/gap/history?status=active")["episodes"]) == 1)
+
 # ------------------------------ 场景 2：换 Pod 后迟报 / 过期名单 / 重报 / 并发
 print("场景 2：换 Pod 后迟报、过期名单、重报（含并发）均不改变目标和累计")
 reset()

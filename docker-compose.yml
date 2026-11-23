@@ -5,6 +5,8 @@ services:
       - "8000:8000"
     environment:
       SCALER_DB: /data/scaler.db
+      # 连续缺副本多少秒记为超时，默认 30；演练时可调小，如 GAP_TIMEOUT_SECONDS: 1
+      GAP_TIMEOUT_SECONDS: "${GAP_TIMEOUT_SECONDS:-30}"
     volumes:
       - scaler-data:/data
     restart: unless-stopped
