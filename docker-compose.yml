@@ -1,0 +1,13 @@
+services:
+  scaler:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SCALER_DB: /data/scaler.db
+    volumes:
+      - scaler-data:/data
+    restart: unless-stopped
+
+volumes:
+  scaler-data:
